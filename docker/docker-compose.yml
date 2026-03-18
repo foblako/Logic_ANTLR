@@ -1,0 +1,26 @@
+name: antlr4-lab
+
+services:
+  translator:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    working_dir: /workspace
+    volumes:
+      - ./../grammar:/workspace/grammar
+      - ./../src:/workspace/src
+      - ./../examples:/workspace/examples
+      - ./../CMakeLists.txt:/workspace/CMakeLists.txt
+    command: ["run", "/workspace/examples/valid/08_complex.example"]
+
+  tests:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    working_dir: /workspace
+    volumes:
+      - ./../grammar:/workspace/grammar
+      - ./../src:/workspace/src
+      - ./../examples:/workspace/examples
+      - ./../CMakeLists.txt:/workspace/CMakeLists.txt
+    command: ["test"]

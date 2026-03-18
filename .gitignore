@@ -1,0 +1,41 @@
+# Build directory
+build/
+generated/
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.dll
+*.a
+*.so
+*.dylib
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Java
+*.class
+
+# ANTLR
+*.tokens
+*.interp
+
+# Docker
+.dockerignore
+
+# Misc
+*.log
+*.tmp
+Thumbs.db
