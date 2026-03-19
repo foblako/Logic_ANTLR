@@ -39,6 +39,12 @@ int main(int argc, char* argv[]) {
     try {
         LogicInterpreter interpreter;
         auto result = interpreter.visit(tree);
+
+        if (!result.has_value()) {
+            std::cerr << "Error: Failed to parse expression" << std::endl;
+            return 1;
+        }
+
         auto ast = std::any_cast<std::shared_ptr<ASTNode>>(result);
 
         if (ast) {

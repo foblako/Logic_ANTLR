@@ -2,7 +2,6 @@
 set -euo pipefail
 
 TRANSLATOR="${1:-}"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 
 if [[ -z "$TRANSLATOR" ]]; then
   echo "Ошибка: укажите путь до транслятора."
@@ -15,8 +14,9 @@ if [[ ! -x "$TRANSLATOR" ]]; then
   exit 1
 fi
 
-VALID_DIR="${SCRIPT_DIR}/valid"
-INVALID_DIR="${SCRIPT_DIR}/invalid"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+VALID_DIR="$SCRIPT_DIR/valid"
+INVALID_DIR="$SCRIPT_DIR/invalid"
 
 passed=0
 failed=0
@@ -29,7 +29,8 @@ run_test() {
   label="$(basename "$file")"
   total=$((total + 1))
 
-  if "$TRANSLATOR" "$file" > /dev/null 2>&1; then
+  # Запускаем через cmd.exe для поддержки Windows .exe
+  if cmd.exe /c "$TRANSLATOR" "$(wslpath -w "$file" 2>/dev/null || echo "$file")" > /dev/null 2>&1; then
     actual_ok=1
   else
     actual_ok=0
@@ -55,25 +56,19 @@ echo "Транслятор: ${TRANSLATOR}"
 echo "──────────────────────────────────────────"
 
 if [[ -d "$VALID_DIR" ]]; then
-  valid_files=("$VALID_DIR"/*.*)
-  if [[ "${#valid_files[@]}" -gt 0 && -f "${valid_files[0]}" ]]; then
-    echo "Положительные примеры (valid/):"
-    for f in "${valid_files[@]}"; do
-      run_test "$f" 1
-    done
-  fi
+  echo "Положительные примеры (valid/):"
+  for f in "$VALID_DIR"/*; do
+    [[ -f "$f" ]] && run_test "$f" 1
+  done
 fi
 
 echo ""
 
 if [[ -d "$INVALID_DIR" ]]; then
-  invalid_files=("$INVALID_DIR"/*.*)
-  if [[ "${#invalid_files[@]}" -gt 0 && -f "${invalid_files[0]}" ]]; then
-    echo "Негативные примеры (invalid/):"
-    for f in "${invalid_files[@]}"; do
-      run_test "$f" 0
-    done
-  fi
+  echo "Негативные примеры (invalid/):"
+  for f in "$INVALID_DIR"/*; do
+    [[ -f "$f" ]] && run_test "$f" 0
+  done
 fi
 
 echo ""
