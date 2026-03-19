@@ -1,24 +1,11 @@
-// ============================================================================
-// LogicInterpreter.cpp — реализация Visitor-интерпретатора.
-//
-// Каждый visit-метод строит узел AST для соответствующей конструкции.
-// Возвращаемое значение: std::any со std::shared_ptr<ASTNode>.
-// ============================================================================
-
 #include "LogicInterpreter.h"
 
-/**
- * Посещение правила orExpr (дизъюнкция ||)
- * Возвращает std::any, содержащий std::shared_ptr<ASTNode>
- */
 std::any LogicInterpreter::visitOrOp(LogicGrammarParser::OrOpContext* ctx) {
     std::vector<std::shared_ptr<ASTNode>> children;
 
-    // Первый операнд
     auto result = visitAndOp(ctx->andExpr(0));
     children.push_back(std::any_cast<std::shared_ptr<ASTNode>>(result));
 
-    // Остальные операнды (если есть операторы ||)
     for (size_t i = 1; i < ctx->andExpr().size(); ++i) {
         auto result = visitAndOp(ctx->andExpr(i));
         children.push_back(std::any_cast<std::shared_ptr<ASTNode>>(result));
@@ -36,17 +23,12 @@ std::any LogicInterpreter::visitOrOp(LogicGrammarParser::OrOpContext* ctx) {
     return orNode;
 }
 
-/**
- * Посещение правила andExpr (конъюнкция &&)
- */
 std::any LogicInterpreter::visitAndOp(LogicGrammarParser::AndOpContext* ctx) {
     std::vector<std::shared_ptr<ASTNode>> children;
 
-    // Первый операнд
     auto result = visitNotOp(ctx->notExpr(0));
     children.push_back(std::any_cast<std::shared_ptr<ASTNode>>(result));
 
-    // Остальные операнды (если есть операторы &&)
     for (size_t i = 1; i < ctx->notExpr().size(); ++i) {
         auto result = visitNotOp(ctx->notExpr(i));
         children.push_back(std::any_cast<std::shared_ptr<ASTNode>>(result));
@@ -64,10 +46,6 @@ std::any LogicInterpreter::visitAndOp(LogicGrammarParser::AndOpContext* ctx) {
     return andNode;
 }
 
-/**
- * Посещение правила notExpr (отрицание !)
- * Правоассоциативный оператор
- */
 std::any LogicInterpreter::visitNotOp(LogicGrammarParser::NotOpContext* ctx) {
     auto result = visitNotOp(ctx->notExpr());
     auto child = std::any_cast<std::shared_ptr<ASTNode>>(result);
@@ -75,30 +53,18 @@ std::any LogicInterpreter::visitNotOp(LogicGrammarParser::NotOpContext* ctx) {
     return notNode;
 }
 
-/**
- * Посещение правила baseExpr (TRUE, FALSE, скобки)
- */
 std::any LogicInterpreter::visitNotBase(LogicGrammarParser::NotBaseContext* ctx) {
     return visitBaseExpr(ctx->baseExpr());
 }
 
-/**
- * Посещение литерала TRUE
- */
 std::any LogicInterpreter::visitTrueLiteral(LogicGrammarParser::TrueLiteralContext* ctx) {
     return std::make_shared<ConstNode>(true);
 }
 
-/**
- * Посещение литерала FALSE
- */
 std::any LogicInterpreter::visitFalseLiteral(LogicGrammarParser::FalseLiteralContext* ctx) {
     return std::make_shared<ConstNode>(false);
 }
 
-/**
- * Посещение правила для скобок
- */
 std::any LogicInterpreter::visitParens(LogicGrammarParser::ParensContext* ctx) {
     return visitOrOp(ctx->orExpr());
 }

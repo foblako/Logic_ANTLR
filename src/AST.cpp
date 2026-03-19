@@ -1,17 +1,14 @@
 #include "AST.h"
 #include <sstream>
 
-// ConstNode
 std::string ConstNode::toString() const {
     return value ? "TRUE" : "FALSE";
 }
 
-// NotNode
 std::string NotNode::toString() const {
     return "!" + child->toString();
 }
 
-// AndNode
 std::string AndNode::toString() const {
     if (children.empty()) return "";
     std::ostringstream oss;
@@ -30,7 +27,6 @@ bool AndNode::evaluate() const {
     return true;
 }
 
-// OrNode
 std::string OrNode::toString() const {
     if (children.empty()) return "";
     std::ostringstream oss;
