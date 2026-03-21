@@ -99,25 +99,6 @@ cmake --build build
 ./build/main ./examples/valid/01_true.example
 ```
 
-## Автоматическая проверка
-
-### Linux / WSL / Git Bash
-
-```bash
-chmod +x examples/run_tests.sh
-./examples/run_tests.sh ./build/main
-```
-
-### Windows (PowerShell/CMD)
-
-Скрипт `run_tests.sh` требует bash. Используйте один из вариантов:
-- Запустите через **Git Bash** или **WSL**
-- Или протестируйте вручную:
-  ```powershell
-  .\build\Release\main.exe .\examples\valid\01_true.example
-  .\build\Release\main.exe .\examples\invalid\01_empty.example
-  ```
-
 ## Структура проекта
 
 ```
