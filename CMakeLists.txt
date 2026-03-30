@@ -66,7 +66,6 @@ add_custom_command(
 
 add_executable(main
     src/main.cpp
-    src/AST.cpp
     src/LogicInterpreter.cpp
     ${ANTLR_GENERATED_SOURCES}
 )
