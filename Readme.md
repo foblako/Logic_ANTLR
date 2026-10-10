@@ -108,8 +108,7 @@ cmake --build build
 │   └── LogicGrammar.g4
 ├── src/
 │   ├── main.cpp
-│   ├── LogicInterpreter.h/.cpp
-│   └── AST.h/.cpp
+│   └── LogicInterpreter.h/.cpp
 └── examples/
     ├── valid/
     └── invalid/
